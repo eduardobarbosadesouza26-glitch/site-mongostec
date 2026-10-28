@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MONGOS TEC | Soluções em Redes & Infraestrutura de TI</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter & Orbitron) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;800;900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0B0813',
+                        darkCard: '#120B24',
+                        darkCardHover: '#1A1033',
+                        neonCyan: '#00F0FF',
+                        neonPurple: '#BD00FF',
+                        neonOrange: '#FF8A00',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        tech: ['Orbitron', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-cyan': '0 0 20px rgba(0, 240, 255, 0.35)',
+                        'glow-purple': '0 0 20px rgba(189, 0, 255, 0.35)',
+                        'glow-orange': '0 0 20px rgba(255, 138, 0, 0.35)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Estilos Customizados para Efeitos Cyberpunk / Dark Mode Glow */
+        body {
+            background-color: #0B0813;
+            color: #E2E8F0;
+            overflow-x: hidden;
+        }
+
+        /* Glassmorphism */
+        .glass-card {
+            background: rgba(18, 11, 36, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(0, 240, 255, 0.15);
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0, 240, 255, 0.4);
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+        }
+
+        /* Animação de Pulsar do Background Canvas */
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        .bg-glow-effect {
+            animation: pulseGlow 6s infinite ease-in-out;
+        }
+
+        /* Gradientes de Texto */
+        .text-gradient-cyan {
+            background: linear-gradient(135deg, #00F0FF 0%, #BD00FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-orange {
+            background: linear-gradient(135deg, #FF8A00 0%, #BD00FF 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scrollbar customizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0B0813;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1A1033;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00F0FF;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-neonCyan selection:text-black">
+
+    <!-- Fundo de Partículas / Malha Tecnológica Dinâmica -->
+    <canvas id="networkCanvas" class="fixed top-0 left-0 w-full h-full pointer-events-none z-0 opacity-40"></canvas>
+
+    <!-- HEADER / MENU DE NAVEGAÇÃO -->
+    <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-darkBg/80 backdrop-blur-md border-b border-white/10" id="mainHeader">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            
+            <!-- Logo MONGOS TEC -->
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="relative flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-tr from-neonPurple via-neonCyan to-neonOrange p-[2px] transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-full h-full bg-darkBg rounded-[10px] flex items-center justify-center">
+                        <i data-lucide="cpu" class="w-6 h-6 text-neonCyan group-hover:text-neonOrange transition-colors"></i>
+                    </div>
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-tech text-2xl font-extrabold tracking-wider text-white">
+                        MONGOS <span class="text-neonCyan">TEC</span>
+                    </span>
+                    <span class="text-[9px] tracking-widest text-slate-400 uppercase -mt-1 font-tech">Redes & Tecnologia</span>
+                </div>
+            </a>
+
+            <!-- Menu Desktop -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <a href="#inicio" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Início</a>
+                <a href="#sobre" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Sobre Nós</a>
+                <a href="#diferenciais" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Diferenciais</a>
+                <a href="#servicos" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Serviços</a>
+                <a href="#portfolio" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Portfólio</a>
+                <a href="#contato" class="text-sm font-medium text-slate-300 hover:text-neonCyan transition-colors">Contato</a>
+            </nav>
+
+            <!-- Botão WhatsApp Header Desktop -->
+            <div class="hidden md:flex items-center">
+                <a href="https://wa.me/5568996142610?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20com%20a%20MONGOS%20TEC." 
+                   target="_blank" 
+                   rel="noopener noreferrer" 
+                   class="relative inline-flex items-center justify-center px-6 py-2.5 text-sm font-semibold text-white rounded-xl bg-gradient-to-r from-neonCyan via-neonPurple to-neonOrange p-[1px] group overflow-hidden shadow-glow-cyan hover:shadow-glow-purple transition-all duration-300">
+                    <span class="w-full h-full bg-darkBg rounded-[11px] px-5 py-2 flex items-center gap-2 group-hover:bg-opacity-80 transition-all">
+                        <i data-lucide="message-square" class="w-4 h-4 text-neonCyan"></i>
+                        Falar no WhatsApp
+                    </span>
+                </a>
+            </div>
+
+            <!-- Botão Hamburguer Mobile -->
+            <button id="mobileMenuBtn" class="md:hidden text-slate-300 hover:text-neonCyan focus:outline-none p-2">
+                <i data-lucide="menu" class="w-7 h-7" id="menuIcon"></i>
+            </button>
+        </div>
+
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-darkCard/95 border-b border-neonCyan/20 backdrop-blur-xl px-4 pt-4 pb-6 space-y-4">
+            <a href="#inicio" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Início</a>
+            <a href="#sobre" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Sobre Nós</a>
+            <a href="#diferenciais" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Diferenciais</a>
+            <a href="#servicos" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Serviços</a>
+            <a href="#portfolio" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Portfólio</a>
+            <a href="#contato" class="mobile-link block text-base font-medium text-slate-200 hover:text-neonCyan">Contato</a>
+            
+            <a href="https://wa.me/5568996142610?text=Ol%C3%A1!%20Gostaria%20de%20solicitar%20um%20or%C3%A7amento%20com%20a%20MONGOS%20TEC." 
+               target="_blank" 
+               class="flex items-center justify-center gap-2 w-full py-3 text-center font-semibold text-black bg-neonCyan rounded-xl shadow-glow-cyan hover:bg-opacity-90 transition">
+                <i data-lucide="message-square" class="w-5 h-5"></i>
+                Falar com Especialista
+            </a>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="relative z-10 pt-20">
+
+        <!-- 1. HERO SECTION -->
+        <section id="inicio" class="min-h-[calc(100vh-80px)] flex items-center justify-center relative px-4 sm:px-6 lg:px-8 py-16 overflow-hidden">
+            <!-- Efeitos de iluminação de fundo -->
+            <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-neonCyan/15 rounded-full blur-[120px] pointer-events-none bg-glow-effect"></div>
+            <div class="absolute bottom-10 right-10 w-80 h-80 bg-neonPurple/20 rounded-full blur-[100px] pointer-events-none bg-glow-effect"></div>
+
+            <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Texto da Hero -->
+                <div class="lg:col-span-7 space-y-8 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-neonCyan/30 bg-neonCyan/10 text-neonCyan text-xs sm:text-sm font-semibold tracking-wide">
+                        <span class="w-2 h-2 rounded-full bg-neonCyan animate-ping"></span>
+                        Especialistas em Infraestrutura e Redes de Alto Desempenho
+                    </div>
+
+                    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-tech font-extrabold leading-tight text-white">
+                        Conectando Seu Negócio ao Futuro com <span class="text-gradient-cyan">Infraestrutura Ágil</span> e Inteligente.
+                    </h1>
+
+                    <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                        A <strong class="text-neonCyan">MONGOS TEC</strong> transforma o ambiente digital da sua empresa. Projetamos, organizamos e otimizamos redes de computadores de alta velocidade com máxima segurança, eliminando gargalos e interrupções.
+                    </p>
+
+                    <!-- Botões de Ação Hero -->
+                    <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-4">
+                        <a href="https://wa.me/5568996142610?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20preciso%20de%20atendimento%20especializado%20em%20redes." 
+                           target="_blank" 
+                           class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-neonCyan to-neonPurple text-black font-bold text-base hover:opacity-95 transition-all shadow-glow-cyan flex items-center justify-center gap-3">
+                            <i data-lucide="zap" class="w-5 h-5 fill-black"></i>
+                            Solicitar Orçamento Rápido
+                        </a>
+                        <a href="#servicos" 
+                           class="w-full sm:w-auto px-8 py-4 rounded-xl border border-white/20 bg-darkCard/60 hover:bg-darkCard hover:border-neonCyan/50 text-white font-medium text-base transition-all flex items-center justify-center gap-2">
+                            Ver Nossos Serviços
+                            <i data-lucide="arrow-down" class="w-4 h-4 text-neonCyan"></i>
+                        </a>
+                    </div>
+
+                    <!-- Métricas Rápidas -->
+                    <div class="grid grid-cols-3 gap-4 pt-8 border-t border-white/10">
+                        <div class="text-center lg:text-left">
+                            <span class="block text-2xl sm:text-3xl font-tech font-bold text-neonCyan">2 ANOS</span>
+                            <span class="text-xs text-slate-400">Garantia Total em Projetos</span>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <span class="block text-2xl sm:text-3xl font-tech font-bold text-neonPurple">100%</span>
+                            <span class="text-xs text-slate-400">Cobertura Nacional</span>
+                        </div>
+                        <div class="text-center lg:text-left">
+                            <span class="block text-2xl sm:text-3xl font-tech font-bold text-neonOrange">24/7</span>
+                            <span class="text-xs text-slate-400">Alta Disponibilidade</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ilustração Tecnológica Interativa Hero -->
+                <div class="lg:col-span-5 relative flex justify-center">
+                    <div class="relative w-full max-w-md aspect-square rounded-3xl glass-card p-6 flex flex-col justify-between overflow-hidden group">
+                        
+                        <!-- Elementos Neon Flutuantes na Maquete -->
+                        <div class="flex justify-between items-center border-b border-white/10 pb-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                            </div>
+                            <span class="text-xs font-mono text-neonCyan">STATUS: REDE ATIVA</span>
+                        </div>
+
+                        <!-- Gráfico / Rack Simulado -->
+                        <div class="my-6 space-y-4">
+                            <!-- Switch 1 -->
+                            <div class="p-3 bg-darkBg/90 rounded-xl border border-neonCyan/30 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="server" class="w-5 h-5 text-neonCyan"></i>
+                                    <span class="text-xs font-mono text-slate-200">Switch Core Cat6a</span>
+                                </div>
+                                <div class="flex gap-1">
+                                    <span class="w-2 h-2 rounded-full bg-neonCyan animate-ping"></span>
+                                    <span class="w-2 h-2 rounded-full bg-neonCyan"></span>
+                                    <span class="w-2 h-2 rounded-full bg-neonCyan"></span>
+                                </div>
+                            </div>
+
+                            <!-- Switch 2 -->
+                            <div class="p-3 bg-darkBg/90 rounded-xl border border-neonPurple/30 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="wifi" class="w-5 h-5 text-neonPurple"></i>
+                                    <span class="text-xs font-mono text-slate-200">Wi-Fi Corporativo Mesh</span>
+                                </div>
+                                <span class="text-xs font-mono text-neonPurple">10 Gbps</span>
+                            </div>
+
+                            <!-- Firewall -->
+                            <div class="p-3 bg-darkBg/90 rounded-xl border border-neonOrange/30 flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <i data-lucide="shield-check" class="w-5 h-5 text-neonOrange"></i>
+                                    <span class="text-xs font-mono text-slate-200">Firewall & VLANs</span>
+                                </div>
+                                <span class="text-xs font-mono text-neonOrange">Protegido</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Inferior da Maquete -->
+                        <div class="bg-gradient-to-r from-neonPurple/20 to-neonCyan/20 p-4 rounded-xl border border-white/10 text-center">
+                            <p class="text-xs font-tech text-white">MONGOS TEC NETWORK SYSTEMS</p>
+                            <p class="text-[10px] text-slate-400">Eficiência e Segurança em Primeiro Lugar</p>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 2. SEÇÃO SOBRE A EMPRESA -->
+        <section id="sobre" class="py-20 relative bg-darkCard/30 border-y border-white/5">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                    
+                    <!-- Imagem / Destaque Visual -->
+                    <div class="lg:col-span-5 relative">
+                        <div class="relative rounded-3xl overflow-hidden glass-card p-8 border border-neonCyan/20">
+                            <div class="absolute -top-10 -right-10 w-40 h-40 bg-neonCyan/20 rounded-full blur-3xl"></div>
+                            
+                            <i data-lucide="network" class="w-16 h-16 text-neonCyan mb-6"></i>
+                            <h3 class="text-2xl font-tech font-bold text-white mb-4">Sólida Experiência em Redes</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                A <strong class="text-white">MONGOS TEC</strong> nasceu com a missão de fornecer estabilidade, alta performance e segurança tecnológica para empresas que não podem parar. Com sede estrategicamente localizada em Palha Seca - AM, atendemos demandas em nível regional e nacional com agilidade impecável.
+                            </p>
+                            
+                            <div class="p-4 bg-darkBg/80 rounded-2xl border border-white/10 flex items-center gap-4">
+                                <i data-lucide="map-pin" class="w-8 h-8 text-neonOrange shrink-0"></i>
+                                <div>
+                                    <p class="text-xs text-slate-400">Sede Principal</p>
+                                    <p class="text-sm font-semibold text-white">Palha Seca - Amazonas (AM)</p>
+                                    <p class="text-xs text-neonCyan">Atendimento e Técnicos para Todas as Regiões</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Conteúdo Sobre -->
+                    <div class="lg:col-span-7 space-y-6">
+                        <div class="inline-block px-3 py-1 rounded-md bg-neonPurple/10 border border-neonPurple/30 text-neonPurple text-xs font-semibold uppercase tracking-wider">
+                            Sobre a MONGOS TEC
+                        </div>
+                        <h2 class="text-3xl sm:text-4xl font-tech font-bold text-white">
+                            Infraestrutura Robusta para Impulsionar o Seu Crescimento
+                        </h2>
+                        <p class="text-slate-300 leading-relaxed text-base">
+                            Sabemos que uma rede lenta ou instável paralisa vendas, prejudica a comunicação e gera perdas financeiras. Por isso, a MONGOS TEC desenvolve soluções sob medida para garantir que sua rede operante seja um ativo de aceleração do seu negócio, nunca um obstáculo.
+                        </p>
+
+                        <!-- Tópicos em Destaque -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4">
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-darkCard/80 border border-white/5">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-neonCyan shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Projetos Padronizados</h4>
+                                    <p class="text-xs text-slate-400">Organização rigorosa de racks e identificação de cabos.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-darkCard/80 border border-white/5">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-neonCyan shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Equipe Especializada</h4>
+                                    <p class="text-xs text-slate-400">Técnicos treinados para cenários complexos.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-darkCard/80 border border-white/5">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-neonCyan shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Equipamentos de Ponta</h4>
+                                    <p class="text-xs text-slate-400">Utilizamos apenas materiais homologados e testados.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-3 p-3 rounded-xl bg-darkCard/80 border border-white/5">
+                                <i data-lucide="check-circle-2" class="w-5 h-5 text-neonCyan shrink-0 mt-0.5"></i>
+                                <div>
+                                    <h4 class="text-sm font-semibold text-white">Suporte Ativo</h4>
+                                    <p class="text-xs text-slate-400">Atendimento rápido e solução efetiva de dúvidas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. SEÇÃO DIFERENCIAIS -->
+        <section id="diferenciais" class="py-20 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <div class="inline-block px-3 py-1 rounded-md bg-neonOrange/10 border border-neonOrange/30 text-neonOrange text-xs font-semibold uppercase tracking-wider mb-3">
+                        Nossos Pilares
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-tech font-bold text-white">
+                        Por Que a <span class="text-gradient-orange">MONGOS TEC</span> É a Escolha Certa?
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base mt-3">
+                        Compromisso com prazos, transparência total e qualidade indescritível em cada cabo passado.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    
+                    <!-- Card 1: Garantia -->
+                    <div class="glass-card rounded-2xl p-6 transition-all duration-300 relative group overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonCyan to-neonPurple"></div>
+                        <div class="w-12 h-12 rounded-xl bg-neonCyan/10 border border-neonCyan/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="award" class="w-6 h-6 text-neonCyan"></i>
+                        </div>
+                        <h3 class="text-xl font-tech font-bold text-white mb-2">Garantia de 2 Anos</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Oferecemos garantia de 2 anos em nossos serviços de infraestrutura e instalação. Confiança total no padrão que entregamos.
+                        </p>
+                    </div>
+
+                    <!-- Card 2: Cobertura -->
+                    <div class="glass-card rounded-2xl p-6 transition-all duration-300 relative group overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonPurple to-neonOrange"></div>
+                        <div class="w-12 h-12 rounded-xl bg-neonPurple/10 border border-neonPurple/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="globe" class="w-6 h-6 text-neonPurple"></i>
+                        </div>
+                        <h3 class="text-xl font-tech font-bold text-white mb-2">Presença em Todas as Regiões</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Mobilizamos técnicos especializados para qualquer localidade. Atendimento ágil sem limitações geográficas para sua empresa.
+                        </p>
+                    </div>
+
+                    <!-- Card 3: Qualidade -->
+                    <div class="glass-card rounded-2xl p-6 transition-all duration-300 relative group overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonOrange to-neonCyan"></div>
+                        <div class="w-12 h-12 rounded-xl bg-neonOrange/10 border border-neonOrange/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="check-check" class="w-6 h-6 text-neonOrange"></i>
+                        </div>
+                        <h3 class="text-xl font-tech font-bold text-white mb-2">Padrão Premium</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Cabeamento certificado, identificação impecável de portas e roteamento limpo para fácil manutenção preventiva.
+                        </p>
+                    </div>
+
+                    <!-- Card 4: Técnicos -->
+                    <div class="glass-card rounded-2xl p-6 transition-all duration-300 relative group overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-neonCyan to-neonOrange"></div>
+                        <div class="w-12 h-12 rounded-xl bg-neonCyan/10 border border-neonCyan/30 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                            <i data-lucide="users" class="w-6 h-6 text-neonCyan"></i>
+                        </div>
+                        <h3 class="text-xl font-tech font-bold text-white mb-2">Técnicos Especializados</h3>
+                        <p class="text-slate-300 text-sm leading-relaxed">
+                            Profissionais altamente qualificados para realizar diagnósticos precisos e implementar as melhores tecnologias disponíveis.
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 4. SEÇÃO DE SERVIÇOS OFERECIDOS -->
+        <section id="servicos" class="py-20 relative bg-darkCard/20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <div class="inline-block px-3 py-1 rounded-md bg-neonCyan/10 border border-neonCyan/30 text-neonCyan text-xs font-semibold uppercase tracking-wider mb-3">
+                        O Que Fazemos
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-tech font-bold text-white">
+                        Serviços de <span class="text-gradient-cyan">Infraestrutura e Redes</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base mt-3">
+                        Soluções completas de ponta a ponta para conectar sua empresa com máxima performance.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Serviço 1: Cabeamento -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonCyan/10 border border-neonCyan/30 flex items-center justify-center mb-6 text-neonCyan group-hover:bg-neonCyan group-hover:text-black transition-colors">
+                                <i data-lucide="cable" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Cabeamento Estruturado</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Projetos e lançamentos de cabeamento de dados e voz (Cat6, Cat6a e Fibra Óptica). Certificação de pontos e organização para alta vazão de dados.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Cabeamento Cat6 / Cat6a</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Lançamento e Fusão de Fibra Óptica</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Identificação e Mapeamento</li>
+                        </ul>
+                    </div>
+
+                    <!-- Serviço 2: Roteadores e Racks -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonPurple/10 border border-neonPurple/30 flex items-center justify-center mb-6 text-neonPurple group-hover:bg-neonPurple group-hover:text-white transition-colors">
+                                <i data-lucide="server" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Roteadores, Switches & Servidores</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Montagem, configuração e otimização de Racks, Switches Gerenciáveis, Roteadores de alto desempenho e Servidores corporativos.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Montagem e Arrumação de Racks</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Configuração de Switches L2/L3</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Balanceamento de Carga e Link Backup</li>
+                        </ul>
+                    </div>
+
+                    <!-- Serviço 3: Wi-Fi Corporativo -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonOrange/10 border border-neonOrange/30 flex items-center justify-center mb-6 text-neonOrange group-hover:bg-neonOrange group-hover:text-black transition-colors">
+                                <i data-lucide="wifi" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Wi-Fi Corporativo Mesh</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Instalação de Access Points de alta densidade para cobertura Wi-Fi contínua sem pontos cegos, com Roaming inteligente para colaboradores e visitantes.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Cobertura sem zonas mortas</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Rede Visitante Segmentada</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Controle de Banda e Acessos</li>
+                        </ul>
+                    </div>
+
+                    <!-- Serviço 4: Segurança & Firewall -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonCyan/10 border border-neonCyan/30 flex items-center justify-center mb-6 text-neonCyan group-hover:bg-neonCyan group-hover:text-black transition-colors">
+                                <i data-lucide="shield" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Segurança de Redes & Firewalls</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Proteção da sua rede contra invasões, vírus e acessos não autorizados. Implementação de VLANs, VPNs seguras para trabalho remoto e UTM.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Implementação de Firewalls</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Configuração de VPN Corporativa</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonCyan"></i> Segmentação por VLANs</li>
+                        </ul>
+                    </div>
+
+                    <!-- Serviço 5: Manutenção & Organização -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonPurple/10 border border-neonPurple/30 flex items-center justify-center mb-6 text-neonPurple group-hover:bg-neonPurple group-hover:text-white transition-colors">
+                                <i data-lucide="wrench" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Manutenção & Reorganização</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Limpeza técnica de racks, substituição de patch cords danificados, identificação de cabos e manutenção preventiva constante.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Reorganização de Racks caóticos</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Teste de conectividade e taxa de erro</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonPurple"></i> Contratos de Manutenção Preventiva</li>
+                        </ul>
+                    </div>
+
+                    <!-- Servicio 6: Consultoria -->
+                    <div class="glass-card rounded-2xl p-8 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between">
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-neonOrange/10 border border-neonOrange/30 flex items-center justify-center mb-6 text-neonOrange group-hover:bg-neonOrange group-hover:text-black transition-colors">
+                                <i data-lucide="activity" class="w-7 h-7"></i>
+                            </div>
+                            <h3 class="text-xl font-tech font-bold text-white mb-3">Auditoria e Diagnóstico de Rede</h3>
+                            <p class="text-slate-300 text-sm leading-relaxed mb-6">
+                                Análise detalhada para identificar gargalos de lentidão, falhas na segurança e vulnerabilidades na sua infraestrutura de TI.
+                            </p>
+                        </div>
+                        <ul class="space-y-2 border-t border-white/10 pt-4 text-xs text-slate-400">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Relatório detalhado de falhas</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Plano de melhoria e expansão</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-neonOrange"></i> Otimização de tráfego existente</li>
+                        </ul>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 5. SEÇÃO PORTFÓLIO (PROJETOS ILUSTRATIVOS) -->
+        <section id="portfolio" class="py-20 relative">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <div class="inline-block px-3 py-1 rounded-md bg-neonPurple/10 border border-neonPurple/30 text-neonPurple text-xs font-semibold uppercase tracking-wider mb-3">
+                        Portfólio de Execuções
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-tech font-bold text-white">
+                        Exemplos de <span class="text-gradient-cyan">Projetos Executados</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm sm:text-base mt-3">
+                        Veja a transformação de infraestruturas com os padrões de excelência da MONGOS TEC.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Projeto 1 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group">
+                        <div class="h-48 bg-gradient-to-br from-slate-900 to-darkCard p-6 flex flex-col justify-between border-b border-white/10 relative">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2.5 py-1 rounded bg-neonCyan/20 text-neonCyan text-[10px] font-mono font-bold">PROJETO RACK #01</span>
+                                <i data-lucide="layers" class="w-5 h-5 text-neonCyan"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-tech font-bold text-lg">Organização de Rack Corporativo</h4>
+                                <p class="text-slate-400 text-xs">Escritório Comercial / 48 Pontos Cat6</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Reorganização completa de cabeamento caótico em rack de 44Us, identificação de patch panels e testes de conectividade sem tempo de inatividade.
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Cat6</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Organização</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Certificação</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projeto 2 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group">
+                        <div class="h-48 bg-gradient-to-br from-slate-900 to-darkCard p-6 flex flex-col justify-between border-b border-white/10 relative">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2.5 py-1 rounded bg-neonPurple/20 text-neonPurple text-[10px] font-mono font-bold">PROJETO WI-FI #02</span>
+                                <i data-lucide="wifi" class="w-5 h-5 text-neonPurple"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-tech font-bold text-lg">Rede Wi-Fi Mesh Industrial</h4>
+                                <p class="text-slate-400 text-xs">Galpão de Logística / 12 Access Points</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Implementação de Wi-Fi de alta capacidade com tecnologia Roaming para coletores de dados e dispositivos em movimento constante.
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Wi-Fi Mesh</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Roaming</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Access Points</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Projeto 3 -->
+                    <div class="glass-card rounded-2xl overflow-hidden group">
+                        <div class="h-48 bg-gradient-to-br from-slate-900 to-darkCard p-6 flex flex-col justify-between border-b border-white/10 relative">
+                            <div class="flex justify-between items-start">
+                                <span class="px-2.5 py-1 rounded bg-neonOrange/20 text-neonOrange text-[10px] font-mono font-bold">PROJETO FIBRA #03</span>
+                                <i data-lucide="zap" class="w-5 h-5 text-neonOrange"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white font-tech font-bold text-lg">Backbone em Fibra Óptica</h4>
+                                <p class="text-slate-400 text-xs">Interligação de Blocos Industriais</p>
+                            </div>
+                        </div>
+                        <div class="p-6 space-y-3">
+                            <p class="text-slate-300 text-xs leading-relaxed">
+                                Lançamento de fibra óptica monomodo com fusão de precisão para alta velocidade de comunicação entre diferentes setores de uma empresa.
+                            </p>
+                            <div class="flex flex-wrap gap-2 pt-2">
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Fibra Óptica</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Fusão</span>
+                                <span class="text-[10px] px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">Backbone</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- 6. SEÇÃO CONTATO E FORMULÁRIO -->
+        <section id="contato" class="py-20 relative bg-darkCard/40 border-t border-white/10">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    
+                    <!-- Informações de Contato -->
+                    <div class="lg:col-span-5 space-y-8">
+                        <div>
+                            <div class="inline-block px-3 py-1 rounded-md bg-neonCyan/10 border border-neonCyan/30 text-neonCyan text-xs font-semibold uppercase tracking-wider mb-3">
+                                Fale Conosco
+                            </div>
+                            <h2 class="text-3xl sm:text-4xl font-tech font-bold text-white">
+                                Solicite Seu <span class="text-gradient-cyan">Orçamento Sem Compromisso</span>
+                            </h2>
+                            <p class="text-slate-300 text-sm mt-3 leading-relaxed">
+                                Nossos especialistas estão prontos para analisar a necessidade da sua empresa e propor a melhor solução tecnológica.
+                            </p>
+                        </div>
+
+                        <!-- Cards de Contato Direto -->
+                        <div class="space-y-4">
+                            
+                            <!-- WhatsApp -->
+                            <a href="https://wa.me/5568996142610?text=Ol%C3%A1!%20Desejo%20falar%20com%20a%20equipe%20da%20MONGOS%20TEC." 
+                               target="_blank" 
+                               class="flex items-center gap-4 p-4 rounded-2xl glass-card hover:border-neonCyan transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-neonCyan/10 border border-neonCyan/30 flex items-center justify-center text-neonCyan group-hover:scale-110 transition-transform">
+                                    <i data-lucide="phone-call" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">Telefone / WhatsApp Comercial</p>
+                                    <p class="text-base font-bold text-white font-tech">+55 (68) 99614-2610</p>
+                                </div>
+                            </a>
+
+                            <!-- E-mail -->
+                            <a href="mailto:mongostec67@gmail.com" 
+                               class="flex items-center gap-4 p-4 rounded-2xl glass-card hover:border-neonPurple transition-all group">
+                                <div class="w-12 h-12 rounded-xl bg-neonPurple/10 border border-neonPurple/30 flex items-center justify-center text-neonPurple group-hover:scale-110 transition-transform">
+                                    <i data-lucide="mail" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">E-mail Profissional</p>
+                                    <p class="text-base font-bold text-white font-tech">mongostec67@gmail.com</p>
+                                </div>
+                            </a>
+
+                            <!-- Localização -->
+                            <div class="flex items-center gap-4 p-4 rounded-2xl glass-card border border-white/10">
+                                <div class="w-12 h-12 rounded-xl bg-neonOrange/10 border border-neonOrange/30 flex items-center justify-center text-neonOrange">
+                                    <i data-lucide="map-pin" class="w-6 h-6"></i>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-slate-400">Sede da Empresa</p>
+                                    <p class="text-sm font-semibold text-white">Palha Seca - AM</p>
+                                    <p class="text-xs text-neonCyan">Atendimento em Todas as Regiões do Brasil</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <!-- Formulário de Mensagem -->
+                    <div class="lg:col-span-7">
+                        <div class="glass-card rounded-3xl p-8 relative overflow-hidden">
+                            <h3 class="text-2xl font-tech font-bold text-white mb-2">Envie uma Mensagem</h3>
+                            <p class="text-slate-400 text-xs mb-6">Preencha o formulário e entraremos em contato rapidamente.</p>
+
+                            <form id="contactForm" class="space-y-5">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-300 mb-2">Seu Nome *</label>
+                                        <input type="text" id="formName" required placeholder="Ex: João Silva" 
+                                               class="w-full px-4 py-3 rounded-xl bg-darkBg/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-neonCyan transition">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-300 mb-2">Seu WhatsApp / Telefone *</label>
+                                        <input type="tel" id="formPhone" required placeholder="Ex: (68) 99614-2610" 
+                                               class="w-full px-4 py-3 rounded-xl bg-darkBg/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-neonCyan transition">
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Seu E-mail *</label>
+                                    <input type="email" id="formEmail" required placeholder="seuemail@empresa.com" 
+                                           class="w-full px-4 py-3 rounded-xl bg-darkBg/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-neonCyan transition">
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Serviço de Interesse</label>
+                                    <select id="formService" class="w-full px-4 py-3 rounded-xl bg-darkBg/80 border border-white/10 text-white focus:outline-none focus:border-neonCyan transition">
+                                        <option value="Cabeamento Estruturado">Cabeamento Estruturado</option>
+                                        <option value="Configuração de Racks e Switches">Configuração de Racks e Switches</option>
+                                        <option value="Wi-Fi Corporativo">Wi-Fi Corporativo</option>
+                                        <option value="Segurança e Firewall">Segurança e Firewall</option>
+                                        <option value="Manutenção de Redes">Manutenção de Redes</option>
+                                        <option value="Outros">Outros Serviços</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-2">Mensagem ou Detalhes do Projeto</label>
+                                    <textarea id="formMessage" rows="4" placeholder="Descreva brevemente o que sua empresa precisa..." 
+                                              class="w-full px-4 py-3 rounded-xl bg-darkBg/80 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-neonCyan transition"></textarea>
+                                </div>
+
+                                <button type="submit" 
+                                        class="w-full py-4 rounded-xl bg-gradient-to-r from-neonCyan via-neonPurple to-neonOrange text-black font-tech font-bold hover:opacity-90 transition-all shadow-glow-cyan">
+                                    ENVIAR SOLICITAÇÃO VIA WHATSAPP
+                                </button>
+                            </form>
+
+                            <!-- Caixa de Feedback Positivo do Envio -->
+                            <div id="formSuccessMessage" class="hidden mt-4 p-4 rounded-xl bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 text-sm text-center">
+                                Redirecionando para o WhatsApp... Obrigado pelo contato!
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-darkBg border-t border-white/10 py-12 relative z-10 text-slate-400 text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+                
+                <!-- Coluna 1: Logo & Sobre -->
+                <div class="md:col-span-2 space-y-4">
+                    <a href="#" class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-neonPurple via-neonCyan to-neonOrange p-[1px]">
+                            <div class="w-full h-full bg-darkBg rounded-[7px] flex items-center justify-center">
+                                <i data-lucide="cpu" class="w-4 h-4 text-neonCyan"></i>
+                            </div>
+                        </div>
+                        <span class="font-tech text-xl font-bold text-white">MONGOS <span class="text-neonCyan">TEC</span></span>
+                    </a>
+                    <p class="text-xs text-slate-400 max-w-sm leading-relaxed">
+                        Especialistas em projetos de redes, cabeamento estruturado e conectividade corporativa de alto rendimento. Atendimento em todas as regiões com sede em Palha Seca - AM.
+                    </p>
+                </div>
+
+                <!-- Coluna 2: Links Rápidos -->
+                <div>
+                    <h4 class="text-white font-tech text-sm font-semibold mb-4">Navegação</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#inicio" class="hover:text-neonCyan transition">Início</a></li>
+                        <li><a href="#sobre" class="hover:text-neonCyan transition">Sobre a Empresa</a></li>
+                        <li><a href="#diferenciais" class="hover:text-neonCyan transition">Nossos Diferenciais</a></li>
+                        <li><a href="#servicos" class="hover:text-neonCyan transition">Serviços Oferecidos</a></li>
+                        <li><a href="#portfolio" class="hover:text-neonCyan transition">Portfólio</a></li>
+                    </ul>
+                </div>
+
+                <!-- Coluna 3: Contato -->
+                <div>
+                    <h4 class="text-white font-tech text-sm font-semibold mb-4">Contato Rápido</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li class="text-slate-300">Palha Seca - AM</li>
+                        <li class="text-neonCyan font-mono">+55 (68) 99614-2610</li>
+                        <li class="text-slate-300">mongostec67@gmail.com</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Divisória e Copyright -->
+            <div class="border-t border-white/5 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
+                <p>&copy; <span id="yearSpan"></span> MONGOS TEC. Todos os direitos reservados.</p>
+                <p class="text-slate-500">Desenvolvido com Foco em Tecnologia e Desempenho.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- BOTÃO FLUTUANTE DO WHATSAPP -->
+    <a href="https://wa.me/5568996142610?text=Ol%C3%A1!%20Estou%20no%20site%20da%20MONGOS%20TEC%20e%20gostaria%20de%20atendimento." 
+       target="_blank" 
+       aria-label="Atendimento via WhatsApp"
+       class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-emerald-500 text-white flex items-center justify-center shadow-lg hover:scale-110 hover:bg-emerald-400 transition-all duration-300 group">
+        <i data-lucide="message-circle" class="w-7 h-7 fill-white"></i>
+        <!-- Tooltip -->
+        <span class="absolute right-16 bg-darkCard text-white text-xs px-3 py-1.5 rounded-lg border border-white/10 whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+            Fale conosco no WhatsApp!
+        </span>
+    </a>
+
+    <!-- SCRIPTS JAVASCRIPT -->
+    <script>
+        // Inicialização de Ícones Lucide
+        lucide.createIcons();
+
+        // Ano dinâmico no Rodapé
+        document.getElementById('yearSpan').textContent = new Date().getFullYear();
+
+        // Controle do Menu Mobile
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Fechar menu mobile ao clicar em um link
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Redirecionamento do Formulário para WhatsApp
+        const contactForm = document.getElementById('contactForm');
+        const formSuccessMessage = document.getElementById('formSuccessMessage');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('formName').value;
+            const phone = document.getElementById('formPhone').value;
+            const email = document.getElementById('formEmail').value;
+            const service = document.getElementById('formService').value;
+            const message = document.getElementById('formMessage').value;
+
+            const text = `*Nova solicitação de orçamento via Site - MONGOS TEC*\n\n` +
+                         `*Nome:* ${name}\n` +
+                         `*Telefone:* ${phone}\n` +
+                         `*E-mail:* ${email}\n` +
+                         `*Serviço:* ${service}\n` +
+                         `*Mensagem:* ${message}`;
+
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://wa.me/5568996142610?text=${encodedText}`;
+
+            formSuccessMessage.classList.remove('hidden');
+
+            setTimeout(() => {
+                window.open(whatsappUrl, '_blank');
+                formSuccessMessage.classList.add('hidden');
+                contactForm.reset();
+            }, 1000);
+        });
+
+        // Canvas de Animação de Fundo de Malha Tecnológica
+        const canvas = document.getElementById('networkCanvas');
+        const ctx = canvas.getContext('2d');
+
+        let width, height;
+        let particles = [];
+
+        function resizeCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initParticles();
+        }
+
+        function initParticles() {
+            particles = [];
+            const particleCount = Math.floor((width * height) / 18000);
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.6,
+                    vy: (Math.random() - 0.5) * 0.6,
+                    radius: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Desenhar partículas
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#00F0FF';
+                ctx.fill();
+
+                // Conectar partículas próximas com linhas neon
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+
+                    if (dist < 110) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.strokeStyle = `rgba(0, 240, 255, ${1 - dist / 110})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        window.onload = function() {
+            resizeCanvas();
+            drawParticles();
+        };
+    </script>
+</body>
+</html>
